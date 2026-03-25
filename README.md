@@ -17,56 +17,72 @@ wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel
 wsl docker push ghcr.io/felipementel/deploy-dotnet-model:2.0
 ````
 
+# Azure Container Registry
+
+````
+az acr build -f .\src\Usuarios.Api\Dockerfile --registry canaldeploy --image felipementel/deploy-dotnet-model:3.0 .
+````
+
 # OCI
 
-## Docker-container
+## Docker-container [ type=docker ]
 
 ### Exportar para Arquivo Tarball
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:3.0 --output=type=docker,dest=./deploy-dotnet-model.tar .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar .
+
 ````
 ### Importar para o Daemon Local
 ````
 wsl docker load -i ./deploy-dotnet-model.tar
 ````
-## OCI com skopeo
+## OCI com skopeo [ type=oci ]
 
-# 0. instalar
+### 0. instalar
 ````
 wsl sudo apt-get update && wsl sudo apt-get install -y skopeo
 ````
 
-# 1. Criar um builder com driver docker-container
+### 1. Criar um builder com driver docker-container
 ````
 wsl docker buildx create --name mybuilder --driver docker-container --use
 ````
 
-# 2. Agora o export OCI funciona
+### 2. Agora o export OCI funciona
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:3.0 --output=type=oci,dest=/tmp/deploy-dotnet-model.tar .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/tmp/deploy-dotnet-model.tar .
 ````
 
-# 3. Importar para o daemon local via skopeo
+### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
 ````
-wsl skopeo copy oci-archive:/tmp/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:3.0
+wsl skopeo copy oci-archive:/tmp/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
 ````
-# 4. (Opcional) Depois de usar, remover o builder
+### 4. (Opcional) Depois de usar, remover o builder
 ````
 wsl docker buildx rm mybuilder
 ````
 
-## OCI com crane
+## OCI com crane [ type=oci ]
 
+````
 wsl bash -c "curl -sL https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz | sudo tar -xzf - -C /usr/local/bin crane"
+````
 
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=./deploy-dotnet-model.tar .
+````
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:5.0 --output=type=oci,dest=./deploy-dotnet-model.tar .
+````
 
+````
 wsl sudo ctr -n moby images import ./deploy-dotnet-model.tar
+````
 
+````
 wsl crane push ./deploy-dotnet-model.tar ghcr.io/felipementel/deploy-dotnet-model:4.0
+````
 
+````
 wsl docker image ls # Nada vai acontecer
-
+````
 ---
 O ctr importou para o image store do containerd, mas o docker image ls consulta o image store do Docker (legado). São stores separados.
 
@@ -87,15 +103,3 @@ wsl sudo ctr -n moby images ls
 ````
 wsl docker rm -f $(wsl docker ps -aq) 2>$null; wsl docker system prune -a -f --volumes
 ````
-
-
-
-
-
-
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:3.0 --output=type=oci,dest=./deploy-dotnet-model.tar .
-
-wsl docker load -i ./deploy-dotnet-model.tar
-wsl skopeo copy oci-archive:./deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:3.0
-
-
