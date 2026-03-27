@@ -105,6 +105,11 @@ Resumo: sem containerd image store ativado, não há como fazer o OCI tar virar 
 wsl sudo ctr -n moby images ls
 ````
 
+### Para excluir as imagens
+````
+wsl sudo ctr -n moby images rm ghcr.io/felipementel/deploy-dotnet-model:3.0
+````
+
 ### Para analisar o ambiente local
 ````
 wsl docker system df
