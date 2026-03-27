@@ -34,7 +34,7 @@ wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel
 ````
 
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true,compression=gzip .
 ````
 
 ### Importar para o Daemon Local
