@@ -53,6 +53,12 @@ Get-Item .\deploy-dotnet-model.tar | Select-Object Name, @{N='Size(MB)';E={[math
 wsl du -h ./deploy-dotnet-model.tar
 ````
 
+> [!NOTE]
+> du = disk usage — mostra quanto espaço em disco um arquivo ou diretório ocupa
+> 
+> -h = human-readable — exibe o tamanho em formato legível (KB, MB, GB) em vez de bytes
+
+
 ### Importar para o Daemon Local
 ````
 wsl docker load -i ./deploy-dotnet-model.tar
