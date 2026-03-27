@@ -50,7 +50,7 @@ Get-Item .\deploy-dotnet-model.tar | Select-Object Name, @{N='Size(MB)';E={[math
 ````
 
 ````bash
-wsl du -h ./deploy-dotnet-model.tar
+wsl du -h ./deploy-dotnet-model-compressed.tar
 ````
 
 > [!NOTE]
