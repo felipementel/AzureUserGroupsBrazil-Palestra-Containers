@@ -99,6 +99,12 @@ Resumo: sem containerd image store ativado, não há como fazer o OCI tar virar 
 ````
 wsl sudo ctr -n moby images ls
 ````
+
+### Para analisar o ambiente local
+````
+wsl docker system df
+````
+
 ### Para limpar o ambiente
 ````
 wsl docker rm -f $(wsl docker ps -aq) 2>$null; wsl docker system prune -a -f --volumes
