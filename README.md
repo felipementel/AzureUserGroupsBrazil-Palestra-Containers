@@ -24,14 +24,19 @@ az acr build -f .\src\Usuarios.Api\Dockerfile --registry canaldeploy --image fel
 ````
 
 # OCI
+[Docker OCI](https://docs.docker.com/build/exporters/oci-docker/)
 
 ## Docker-container [ type=docker ]
 
 ### Exportar para Arquivo Tarball
 ````
 wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar .
+````
 
 ````
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true .
+````
+
 ### Importar para o Daemon Local
 ````
 wsl docker load -i ./deploy-dotnet-model.tar
