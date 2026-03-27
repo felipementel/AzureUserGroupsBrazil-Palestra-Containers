@@ -33,8 +33,24 @@ az acr build -f .\src\Usuarios.Api\Dockerfile --registry canaldeploy --image fel
 wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar .
 ````
 
+| Algoritmo | Níveis válidos | Melhor para |
+|---|---|---|
+| gzip | 1-9 | Compatibilidade universal |
+| zstd | 1-22 | Compressão máxima, mais rápido que gzip |
+| estargz | 1-9 | Lazy pulling em registries |
+
 ````
 wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true,compression=gzip .
+````
+
+# Leitura do tamanho do arquivo
+
+````powershell
+Get-Item .\deploy-dotnet-model.tar | Select-Object Name, @{N='Size(MB)';E={[math]::Round($_.Length/1MB,2)}}
+````
+
+````bash
+wsl du -h ./deploy-dotnet-model.tar
 ````
 
 ### Importar para o Daemon Local
