@@ -101,12 +101,12 @@ wsl docker buildx create --name mybuilder --driver docker-container --use
 
 ### 2. Agora o export OCI funciona
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/tmp/deploy-dotnet-model.tar .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/deploy-dotnet-model.tar .
 ````
 
 ### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
 ````
-wsl skopeo copy oci-archive:/tmp/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
+wsl skopeo copy oci-archive:/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
 ````
 ### 4. (Opcional) Depois de usar, remover o builder
 ````
