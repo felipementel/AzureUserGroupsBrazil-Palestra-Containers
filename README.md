@@ -156,7 +156,7 @@ wsl sudo ctr -n moby images ls
 wsl sudo ctr -n moby images rm ghcr.io/felipementel/deploy-dotnet-model:3.0
 ````
 
-### Para analisar o ambiente local
+### Para analisar o ambiente local (disk-free)
 ````
 wsl docker system df
 ````
