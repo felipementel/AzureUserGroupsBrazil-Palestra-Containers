@@ -101,7 +101,7 @@ wsl docker buildx create --name mybuilder --driver docker-container --use
 
 ### 2. Agora o export OCI funciona
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/deploy-dotnet-model.tar .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/deploy-dotnet-model-skopeo.tar .
 ````
 
 ### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
@@ -120,7 +120,7 @@ wsl bash -c "curl -sL https://github.com/google/go-containerregistry/releases/la
 ````
 
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:5.0 --output=type=oci,dest=./deploy-dotnet-model.tar .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:5.0 --output=type=oci,dest=./deploy-dotnet-model-crane.tar .
 ````
 
 ````
