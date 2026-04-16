@@ -60,11 +60,9 @@ wsl du -h ./deploy-dotnet-model-compressed.tar
 > 
 > -h = human-readable — exibe o tamanho em formato legível (KB, MB, GB) em vez de bytes
 
-O nome do arquivo é apenas uma convenção — o Docker não se importa com a extensão. .tar funciona para qualquer um deles.
+O nome do arquivo é apenas uma convenção — o Docker não se importa com a extensão. .tar ou .tar.zst | funciona para qualquer um deles.
 
 O que importa é o conteúdo (o formato das layers dentro do tar), não a extensão do arquivo. O docker load lê o conteúdo e identifica automaticamente.
-
-Porém, atenção: docker load não suporta layers comprimidas com zstd. Ele só entende gzip e uncompressed. Então se você usar compression=zstd, o docker load -i vai falhar.
 
 Se você gerar com compression=zstd, para usar docker load depois, teria que:
 
