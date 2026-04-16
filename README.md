@@ -40,7 +40,7 @@ wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel
 | estargz | 1-9 | Lazy pulling em registries |
 
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model-compressed.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true,compression=zstd .
+wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0-compact --output=type=docker,dest=./deploy-dotnet-model-compressed.tar,name=ghcr.io/felipementel/deploy-dotnet-model:4.0,compression-level=22,force-compression=true,compression=zstd .
 ````
 
 # Leitura do tamanho do arquivo
