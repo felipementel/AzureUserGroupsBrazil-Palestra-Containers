@@ -102,12 +102,12 @@ docker buildx create --name builder-canal-deploy --driver docker-container --use
 
 ### 2. Agora o export OCI funciona
 ````
-docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --builder=builder-canal-deploy --output=type=oci,dest=./deploy-dotnet-model-skopeo.tar .
+docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo --builder=builder-canal-deploy --output=type=oci,dest=./deploy-dotnet-model-skopeo.tar .
 ````
 
 ### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
 ````
-skopeo copy oci-archive:/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
+skopeo copy oci-archive:./deploy-dotnet-model-skopeo.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo
 ````
 ### 4. (Opcional) Depois de usar, remover o builder
 ````
