@@ -88,29 +88,30 @@ Para fluxo com docker load, use sempre gzip ou uncompressed. Não tem vantagem u
 wsl docker load -i ./deploy-dotnet-model.tar
 ````
 ## OCI com skopeo [ type=oci ]
+### Só funciona no WSL
 
 ### 0. instalar
 ````
-wsl sudo apt-get update && wsl sudo apt-get install -y skopeo
+sudo apt-get update && wsl sudo apt-get install -y skopeo
 ````
 
 ### 1. Criar um builder com driver docker-container
 ````
-wsl docker buildx create --name mybuilder --driver docker-container --use
+docker buildx create --name builder-canal-deploy --driver docker-container --use
 ````
 
 ### 2. Agora o export OCI funciona
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=oci,dest=/deploy-dotnet-model-skopeo.tar .
+docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --builder=builder-canal-deploy --output=type=oci,dest=./deploy-dotnet-model-skopeo.tar .
 ````
 
 ### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
 ````
-wsl skopeo copy oci-archive:/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
+skopeo copy oci-archive:/deploy-dotnet-model.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0
 ````
 ### 4. (Opcional) Depois de usar, remover o builder
 ````
-wsl docker buildx rm mybuilder
+docker buildx rm mybuilder
 ````
 
 ## OCI com crane [ type=oci ]
