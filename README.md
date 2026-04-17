@@ -105,6 +105,8 @@ Para fluxo com docker load, use sempre gzip ou uncompressed. Não tem vantagem u
 ````
 wsl docker load -i ./deploy-dotnet-model.tar
 ````
+---
+
 ## OCI com skopeo [ type=oci ]
 ### Só funciona no WSL
 
@@ -149,6 +151,15 @@ skopeo inspect \
 ### Listar o conteudo do arquivo
 ````
 tar -tf ./deploy-dotnet-model-skopeo.tar
+````
+````
+mkdir -p ./oci-image
+````
+````
+tar -xf ./deploy-dotnet-model-skopeo.tar -C ./oci-image
+````
+````
+tree ./oci-image
 ````
 
 ## OCI com crane [ type=oci ]
@@ -203,6 +214,53 @@ wsl sudo ctr -n moby images ls
 wsl sudo ctr -n moby `
 images rm ghcr.io/felipementel/deploy-dotnet-model:5.0-crane
 ````
+
+---
+
+# Exemplos práticos para o seu caso
+
+## Ver o digest de uma tag no GHCR
+
+```bash
+crane digest ghcr.io/felipementel/deploy-dotnet-model:4.0
+```
+
+## Listar as tags
+
+```bash
+crane ls ghcr.io/felipementel/deploy-dotnet-model
+```
+
+## Ver o manifest
+
+```bash
+crane manifest ghcr.io/felipementel/deploy-dotnet-model:4.0 | jq
+```
+
+## Ver o config
+
+```bash
+crane config ghcr.io/felipementel/deploy-dotnet-model:4.0 | jq
+```
+
+## Copiar do GHCR para ACR sem `docker pull` + `docker push`
+
+```bash
+crane copy \
+  ghcr.io/felipementel/deploy-dotnet-model:4.0 \
+  canaldeploy.azurecr.io/deploy-dotnet-model:4.0
+```
+
+> Esse `copy` é uma cópia eficiente entre origem e destino, preservando o digest.
+
+## Autenticação
+
+O Crane também tem comando próprio para login:
+
+```bash
+crane auth login ghcr.io -u SEU_USUARIO -p SEU_TOKEN
+```
+
 
 ### Para analisar o ambiente local (disk-free)
 ````
