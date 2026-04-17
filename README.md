@@ -2,9 +2,9 @@
 
 # Docker
 
-docker driver costuma carregar localmente por padrão;
+docker driver costuma carregar localmente por padrão; (docker build ...)
 
-docker-container não faz isso automaticamente, então vc precisa escolher entre
+docker-container não faz isso automaticamente, então vc precisa escolher entre (docker buildx build ..._
 ````
 --push
 --load | isso é um shorthand para --output=type=docker
