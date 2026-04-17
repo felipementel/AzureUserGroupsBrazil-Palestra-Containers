@@ -7,14 +7,22 @@ docker driver costuma carregar localmente por padrão;
 docker-container não faz isso automaticamente, então vc precisa escolher entre
 ````
 --push
---load
+--load | isso é um shorthand para --output=type=docker
 ````
 
+#### --push
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:1.0 --push .
+wsl docker buildx build `
+-f ./src/Usuarios.Api/Dockerfile `
+-t ghcr.io/felipementel/deploy-dotnet-model:1.0 `
+--push .
 ````
+#### --load
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:2.0 --load .
+wsl docker buildx build `
+-f ./src/Usuarios.Api/Dockerfile `
+-t ghcr.io/felipementel/deploy-dotnet-model:2.0 `
+--load .
 
 wsl docker push ghcr.io/felipementel/deploy-dotnet-model:2.0
 ````
@@ -22,7 +30,10 @@ wsl docker push ghcr.io/felipementel/deploy-dotnet-model:2.0
 # Azure Container Registry
 
 ````
-az acr build -f .\src\Usuarios.Api\Dockerfile --registry canaldeploy --image felipementel/deploy-dotnet-model:3.0 .
+az acr build `
+-f .\src\Usuarios.Api\Dockerfile `
+--registry canaldeploy `
+--image felipementel/deploy-dotnet-model:3.0 .
 ````
 
 # OCI
@@ -32,7 +43,10 @@ az acr build -f .\src\Usuarios.Api\Dockerfile --registry canaldeploy --image fel
 
 ### Exportar para Arquivo Tarball
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0 --output=type=docker,dest=./deploy-dotnet-model.tar .
+wsl docker buildx build `
+-f ./src/Usuarios.Api/Dockerfile `
+-t ghcr.io/felipementel/deploy-dotnet-model:4.0 `
+--output=type=docker,dest=./deploy-dotnet-model.tar .
 ````
 
 | Algoritmo | Níveis válidos | Melhor para |
@@ -42,7 +56,10 @@ wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel
 | estargz | 1-9 | Lazy pulling em registries |
 
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0-compressed --output=type=docker,dest=./deploy-dotnet-model-compressed.tar.zst,name=ghcr.io/felipementel/deploy-dotnet-model:4.0-compressed,compression-level=22,force-compression=true,compression=zstd .
+wsl docker buildx build `
+-f ./src/Usuarios.Api/Dockerfile `
+-t ghcr.io/felipementel/deploy-dotnet-model:4.0-compressed `
+--output=type=docker,dest=./deploy-dotnet-model-compressed.tar.zst,name=ghcr.io/felipementel/deploy-dotnet-model:4.0-compressed,compression-level=22,force-compression=true,compression=zstd .
 ````
 
 # Leitura do tamanho do arquivo
@@ -97,39 +114,67 @@ sudo apt-get update && wsl sudo apt-get install -y skopeo
 
 ### 1. Criar um builder com driver docker-container
 ````
-docker buildx create --name builder-canal-deploy --driver docker-container --use
+docker buildx create \
+--name builder-canal-deploy \
+--driver docker-container --use
 ````
 
 ### 2. Agora o export OCI funciona
 ````
-docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo --builder=builder-canal-deploy --output=type=oci,dest=./deploy-dotnet-model-skopeo.tar .
+docker buildx build \
+-f ./src/Usuarios.Api/Dockerfile \
+-t ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo \
+--builder=builder-canal-deploy \
+--output=type=oci,dest=./deploy-dotnet-model-skopeo.tar .
 ````
 
 ### 3. Importar para o daemon local via skopeo [ Gera erro no windows ] 
 ````
-skopeo copy oci-archive:./deploy-dotnet-model-skopeo.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo
+skopeo copy \
+oci-archive:./deploy-dotnet-model-skopeo.tar docker-daemon:ghcr.io/felipementel/deploy-dotnet-model:4.0-skopeo
 ````
 ### 4. (Opcional) Depois de usar, remover o builder
 ````
 docker buildx rm mybuilder
 ````
 
+### 5. Inspeciando uma imagem
+> application/vnd.oci.distribution.manifest.v2+json
+````
+skopeo inspect \
+--raw oci-archive:./deploy-dotnet-model-skopeo.tar
+````
+
+### Listar o conteudo do arquivo
+````
+tar -tf ./deploy-dotnet-model-skopeo.tar
+````
+
 ## OCI com crane [ type=oci ]
 
 ````
-wsl bash -c "curl -sL https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz | sudo tar -xzf - -C /usr/local/bin crane"
+wsl bash -c `
+"curl -sL https://github.com/google/go-containerregistry/releases/latest/download/go-containerregistry_Linux_x86_64.tar.gz | `
+sudo tar -xzf - -C /usr/local/bin crane"
 ````
 
 ````
-wsl docker buildx build -f ./src/Usuarios.Api/Dockerfile -t ghcr.io/felipementel/deploy-dotnet-model:5.0 --output=type=oci,dest=./deploy-dotnet-model-crane.tar .
+wsl docker buildx build `
+-f ./src/Usuarios.Api/Dockerfile `
+-t ghcr.io/felipementel/deploy-dotnet-model:5.0-crane `
+--output=type=oci,dest=./deploy-dotnet-model-crane.tar .
 ````
 
 ````
-wsl sudo ctr -n moby images import ./deploy-dotnet-model.tar
+wsl sudo ctr -n `
+moby images `
+import ./deploy-dotnet-model.tar
 ````
 
 ````
-wsl crane push ./deploy-dotnet-model.tar ghcr.io/felipementel/deploy-dotnet-model:4.0
+wsl crane `
+push ./deploy-dotnet-model.tar `
+ghcr.io/felipementel/deploy-dotnet-model:5.0-crane
 ````
 
 ````
@@ -154,7 +199,8 @@ wsl sudo ctr -n moby images ls
 
 ### Para excluir as imagens
 ````
-wsl sudo ctr -n moby images rm ghcr.io/felipementel/deploy-dotnet-model:3.0
+wsl sudo ctr -n moby `
+images rm ghcr.io/felipementel/deploy-dotnet-model:5.0-crane
 ````
 
 ### Para analisar o ambiente local (disk-free)
