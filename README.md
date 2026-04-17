@@ -23,7 +23,8 @@ wsl docker buildx build `
 -f ./src/Usuarios.Api/Dockerfile `
 -t ghcr.io/felipementel/deploy-dotnet-model:2.0 `
 --load .
-
+````
+````
 wsl docker push ghcr.io/felipementel/deploy-dotnet-model:2.0
 ````
 
