@@ -122,6 +122,16 @@ docker buildx create \
 --driver docker-container --use
 ````
 
+### 1.1 Deletar o builder criado
+````
+docker buildx rm builder-canal-deploy
+````
+
+### 1.2 Listar os builders
+````
+docker buildx ls
+````
+
 ### 2. Agora o export OCI funciona
 ````
 docker buildx build \
